@@ -1,0 +1,14 @@
+set policy-options prefix-list {{ cusName }} {{ prefix }}
+set firewall policer {{ cusBW }} if-exceeding bandwidth-limit {{ cusBW }}M
+set firewall policer {{ cusBW }} if-exceeding burst-size-limit 15k
+set firewall policer {{ cusBW }} then discard
+set firewall family inet filter group_filterv4 term {{ cusUploadName }} from interface-group 1
+set firewall family inet filter group_filterv4 term {{ cusUploadName }} from source-prefix-list {{ cusName }}
+set firewall family inet filter group_filterv4 term {{ cusUploadName }} then policer {{ cusUpload }}
+set firewall family inet filter group_filterv4 term {{ cusUploadName }} then count {{ cusUploadName }}
+set firewall family inet filter group_filterv4 term {{ cusUploadName }} then accept
+set firewall family inet filter group_filterv4 term {{ cusDownloadName }} from interface-group 1
+set firewall family inet filter group_filterv4 term {{ cusDownloadName }} from destination-prefix-list {{ cusName }}
+set firewall family inet filter group_filterv4 term {{ cusDownloadName }} then policer {{ cusDownload }}
+set firewall family inet filter group_filterv4 term {{ cusDownloadName }} then count {{ cusDownloadName }}
+set firewall family inet filter group_filterv4 term {{ cusDownloadName }} then accept
